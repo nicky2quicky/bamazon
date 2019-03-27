@@ -82,12 +82,40 @@ function questions() {
     .then(function(input) {
       connection.query(
         "SELECT * FROM products WHERE ?",
-        {item_id: input.item_id},
+        { item_id: input.item_id },
         function(err, results) {
           if (err) throw err;
+          //   If user does not select an item 1-10, then console log the error and re-ask question
           if (results.length === 0) {
-            console.log(chalk.red("This item does not exist, please select a product from 1-10"));
+            console.log(
+              chalk.red(
+                "This item does not exist, please select a product from 1-10"
+              )
+            );
             questions();
+          } else {
+            var product = results[0];
+            if (input.orderQuantity <= product.stock) {
+              console.log(chalk.black.bold.bgGreen("Congratulations, your order has been placed!!!!"));
+              var adjustStock =
+                "UPDATE products SET stock = " +
+                (product.stock - input.orderQuantity) +
+                "WHERE item_id = " +
+                input.item_id;
+
+              connection.query(adjustStock, function(err, results) {
+                if (err) throw err;
+                console.log(chalk.black.bold.bgGreen(
+                  "Your total is $" + product.price * input.orderQuantity
+                ));
+                connection.end();
+              });
+            } else {
+                console.log(chalk.bold.bgRed(
+                  "*** We do not have that number of items available for order, please reduce quantity ***"
+                ));
+                questions();
+              }
           }
         }
       );
