@@ -23,48 +23,73 @@ var connection = mysql.createConnection({
 // Creating the connection to the DB and calling the first function displaying the product catalog
 
 connection.connect(function(err) {
-    if (err) throw err;
-    console.log(chalk.blue("****************************"));
-    queryCatalog();
-  });
+  if (err) throw err;
+  console.log(chalk.blue("****************************"));
+  queryCatalog();
+});
 
 // Defining the first function calling out the catalog and prices
 
-  function queryCatalog(){
-      connection.query("SELECT * FROM products", function(err, res){
-          for(var i = 0; i < res.length; i++){
-              console.log(chalk.green("Product: " + res[i].item_id + " || " + res[i].product_name + " || Price: " + res[i].price));
-              console.log(chalk.blue("****************************"));
-          }
-          questions();
-      })
-  }
+function queryCatalog() {
+  connection.query("SELECT * FROM products", function(err, res) {
+    for (var i = 0; i < res.length; i++) {
+      console.log(
+        chalk.green(
+          "Product: " +
+            res[i].item_id +
+            " || " +
+            res[i].product_name +
+            " || Price: $" +
+            res[i].price
+        )
+      );
+      console.log(chalk.blue("****************************"));
+    }
+    questions();
+  });
+}
 
-  function questions(){
-      inquirer
-        .prompt([{
-            // First prompt question asking for the product number
+function questions() {
+  inquirer
+    .prompt([
+      {
+        // First prompt question asking for the product number
         message: "Please select a product number: ",
         type: "input",
         name: "item_id",
         // Validating to make sure they enter a # within their answer
         validate: function(value) {
-            if (isNaN(value) === false) {
-              return true;
-            }
-            return false;
-          }},
-          {
-            // Then prompt question asking for the number of the product you'd like
-        message: "Please enter the quantity of products you'd like",
+          if (isNaN(value) === false) {
+            return true;
+          }
+          return false;
+        }
+      },
+      {
+        // Then prompt question asking for the number of the product you'd like
+        message: "Please enter the quantity of products you'd like: ",
         type: "input",
         name: "orderQuantity",
         // Validating to make sure they enter a # within their answer
         validate: function(value) {
-            if (isNaN(value) === false) {
-              return true;
-            }
-            return false;
-          }}
-        ])
-  }
+          if (isNaN(value) === false) {
+            return true;
+          }
+          return false;
+        }
+      }
+    ])
+    .then(function(input) {
+      connection.query(
+        "SELECT * FROM products WHERE ?",
+        {item_id: input.item_id},
+        function(err, results) {
+          if (err) throw err;
+          if (results.length === 0) {
+            console.log(chalk.red("This item does not exist, please select a product from 1-10"));
+            questions();
+          }
+        }
+      );
+    });
+}
