@@ -96,12 +96,12 @@ function questions() {
           } else {
             var product = results[0];
             if (input.orderQuantity <= product.stock) {
-              console.log(chalk.black.bold.bgGreen("Congratulations, your order has been placed!!!!"));
+              console.log(chalk.white.bold.bgBlue("Congratulations, your order of " + input.orderQuantity + " " + product.product_name + " has been placed!!!!"));
               var updateStock = "UPDATE products SET stock = " + (product.stock - input.orderQuantity) + " WHERE item_id = " + input.item_id;
 
               connection.query(updateStock, function(err, results) {
                 if (err) throw err;
-                console.log(chalk.black.bold.bgGreen(
+                console.log(chalk.white.bold.bgRed(
                   "Your total is $" + product.price * input.orderQuantity
                 ));
                 connection.end();
