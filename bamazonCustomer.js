@@ -67,7 +67,7 @@ function questions() {
       },
       {
         // Then prompt question asking for the number of the product you'd like
-        message: "Please enter the quantity of products you'd like: ",
+        message: "Please enter the quantity of product you'd like: ",
         type: "input",
         name: "orderQuantity",
         // Validating to make sure they enter a # within their answer
@@ -97,20 +97,17 @@ function questions() {
             var product = results[0];
             if (input.orderQuantity <= product.stock) {
               console.log(chalk.black.bold.bgGreen("Congratulations, your order has been placed!!!!"));
-              var adjustStock =
-                "UPDATE products SET stock = " +
-                (product.stock - input.orderQuantity) +
-                "WHERE item_id = " +
-                input.item_id;
+              var updateStock = "UPDATE products SET stock = " + (product.stock - input.orderQuantity) + " WHERE item_id = " + input.item_id;
 
-              connection.query(adjustStock, function(err, results) {
+              connection.query(updateStock, function(err, results) {
                 if (err) throw err;
                 console.log(chalk.black.bold.bgGreen(
                   "Your total is $" + product.price * input.orderQuantity
                 ));
                 connection.end();
               });
-            } else {
+            } 
+            else {
                 console.log(chalk.bold.bgRed(
                   "*** We do not have that number of items available for order, please reduce quantity ***"
                 ));
