@@ -1,8 +1,12 @@
+-- Creating dependencies for the SQL Database
+
 DROP DATABASE IF EXISTS bamazonDB;
 
 CREATE DATABASE bamazonDB;
 
 USE bamazonDB;
+
+-- Table Properties for the Bamazon Catalog
 
 CREATE TABLE products (
   item_id INT NOT NULL AUTO_INCREMENT,
@@ -12,6 +16,8 @@ CREATE TABLE products (
   stock INT (100) NULL,
   PRIMARY KEY (item_id)
 );
+
+-- Inserting Values into the Table
 
 INSERT INTO products (product_name, department_name, price, stock)
 VALUES ("Odyssey Putter", "Sporting Goods", 129, 50);
