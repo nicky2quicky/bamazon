@@ -109,7 +109,7 @@ function questions() {
             } 
             else {
                 console.log(chalk.bold.bgRed(
-                  "*** We do not have that number of items available for order, please reduce quantity ***"
+                  "*** INSUFFICIENT QUANTITY! We do not have that number of items available for order, please reduce quantity ***"
                 ));
                 questions();
               }
